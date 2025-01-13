@@ -2,7 +2,7 @@ const express = require('express');
 const Question = require('../models/question'); // Assuming the model is named `question.js`
 const router = express.Router();
 
-router.post('/', async (req, res) => {
+router.post('/questions', async (req, res) => {
   try {
     const { questionText, choiceA, choiceB, choiceC, choiceD, correctChoice } = req.body;
     
@@ -22,7 +22,7 @@ router.post('/', async (req, res) => {
   }
 });
 
-router.get('/', async (req, res) => {
+router.get('/questions', async (req, res) => {
   try {
     const questions = await Question.findAll();  // Fetch all questions from the database
     res.json(questions);  // Send the questions in the response

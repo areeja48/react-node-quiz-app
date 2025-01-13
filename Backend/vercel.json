@@ -1,32 +1,64 @@
 {
-    "version": 2,
-    "builds": [
-      {
-        "src": "backend/api/**/*.js",
-        "use": "@vercel/node"
-      }
-    ],
-    "routes": [
-      {
-        "src": "/api/questions",
-        "dest": "/backend/api/questions.js"
-      },
-      {
-        "src": "/api/auth",
-        "dest": "/backend/api/auth.js"
-      },
-      {
-        "src": "/api/results",
-        "dest": "/backend/api/results.js"
-      },
-      {
-        "src": "/api/user",
-        "dest": "/backend/api/user.js"
-      },
-      {
-        "src": "/api/(.*)",
-        "dest": "/backend/api/server.js"
-      }
-    ]
-  }
-  
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/server.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/register",
+      "dest": "/api/server.js"
+    },
+    {
+      "src": "/api/login",
+      "dest": "/api/server.js"
+    },
+    {
+      "src": "/api/admin/dashboard",
+      "dest": "/api/server.js"
+    },
+    {
+      "src": "/api/admin",
+      "dest": "/api/server.js"
+    },
+    {
+      "src": "/api/logout",
+      "dest": "/api/server.js"
+    },
+    {
+      "src": "/api/generateOtp",
+      "dest": "/api/server.js"
+    },
+    {
+      "src": "/api/reset",
+      "dest": "/api/server.js"
+    },
+    {
+      "src": "/api/comments",
+      "dest": "/api/server.js"
+    },
+    {
+      "src": "/api/admin/usercomments",
+      "dest": "/api/server.js"
+    },
+    {
+      "src": "/api/submitscore",
+      "dest": "/api/server.js"
+    },
+    {
+      "src": "/api/users/results",
+      "dest": "/api/server.js"
+    },
+    {
+      "src": "/api/highestscorer",
+      "dest": "/api/server.js"
+    },
+    {
+      "src": "/api/questions",
+      "dest": "/api/server.js"
+    }
+  ]
+}
+
