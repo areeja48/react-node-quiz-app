@@ -1,0 +1,32 @@
+{
+    "version": 2,
+    "builds": [
+      {
+        "src": "backend/api/**/*.js",
+        "use": "@vercel/node"
+      }
+    ],
+    "routes": [
+      {
+        "src": "/api/questions",
+        "dest": "/backend/api/questions.js"
+      },
+      {
+        "src": "/api/auth",
+        "dest": "/backend/api/auth.js"
+      },
+      {
+        "src": "/api/results",
+        "dest": "/backend/api/results.js"
+      },
+      {
+        "src": "/api/user",
+        "dest": "/backend/api/user.js"
+      },
+      {
+        "src": "/api/server",
+        "dest": "/backend/api/server.js"
+      }
+    ]
+  }
+  
