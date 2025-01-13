@@ -8,39 +8,39 @@
   ],
   "routes": [
     {
-      "src": "/api/register",
+      "src": "/auth/register",
       "dest": "/api/server.js"
     },
     {
-      "src": "/api/login",
+      "src": "/auth/login",
       "dest": "/api/server.js"
     },
     {
-      "src": "/api/admin/dashboard",
+      "src": "/auth/admin/dashboard",
       "dest": "/api/server.js"
     },
     {
-      "src": "/api/admin",
+      "src": "/auth/admin",
       "dest": "/api/server.js"
     },
     {
-      "src": "/api/logout",
+      "src": "/auth/logout",
       "dest": "/api/server.js"
     },
     {
-      "src": "/api/generateOtp",
+      "src": "/auth/generateOtp",
       "dest": "/api/server.js"
     },
     {
-      "src": "/api/reset",
+      "src": "/auth/reset",
       "dest": "/api/server.js"
     },
     {
-      "src": "/api/comments",
+      "src": "/auth/comments",
       "dest": "/api/server.js"
     },
     {
-      "src": "/api/admin/usercomments",
+      "src": "/auth/admin/usercomments",
       "dest": "/api/server.js"
     },
     {
