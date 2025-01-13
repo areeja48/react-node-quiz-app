@@ -1,8 +1,10 @@
 const { Sequelize } = require('sequelize');
 require('dotenv').config();
 
-// Retrieve the full database URL from environment variables
+// Retrieve and log the MYSQL_PUBLIC_URL
 const dbUrl = process.env.MYSQL_PUBLIC_URL;
+
+console.log("MYSQL_PUBLIC_URL:", dbUrl); // Log to verify if it's set correctly
 
 if (!dbUrl || dbUrl.trim() === '') {
   throw new Error('MYSQL_PUBLIC_URL environment variable is not set or is empty.');
