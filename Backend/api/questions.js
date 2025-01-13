@@ -1,5 +1,5 @@
 const express = require('express');
-const Question = require('../models/question'); // Assuming the model is named `question.js`
+const Question = require('../models/Question'); // Assuming the model is named `question.js`
 const router = express.Router();
 
 router.post('/questions', async (req, res) => {
