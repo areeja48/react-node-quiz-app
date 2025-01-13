@@ -11,8 +11,9 @@ require('dotenv').config();
 
 const app = express();
 
+
 // Set up middleware
-app.use(cors());
+app.use(cors({ origin: 'https://interactive-quiz-app-iota.vercel.app' }));
 app.use(express.json());
 app.use(session({
   secret: process.env.SESSION_SECRET || 'your-secret-key', // Session encryption
