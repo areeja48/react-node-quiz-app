@@ -24,7 +24,7 @@
         "dest": "/backend/api/user.js"
       },
       {
-        "src": "/api/server",
+        "src": "/api/(.*)",
         "dest": "/backend/api/server.js"
       }
     ]

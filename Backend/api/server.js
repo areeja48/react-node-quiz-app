@@ -1,10 +1,10 @@
 const express = require('express');
 const session = require('express-session');
 const sequelize = require('../config/database'); // Database configuration
-const authRoutes = require('../api/auth');
-const questionRoutes = require('../api/questions');
-const resultRoutes = require('../api/results');
-const userRoute = require('../api/user');
+const authRoutes = require('./auth');
+const questionRoutes = require('./questions');
+const resultRoutes = require('./results');
+const userRoute = require('./user');
 const path = require('path');
 const cors = require('cors');
 require('dotenv').config();
