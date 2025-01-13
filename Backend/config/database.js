@@ -1,17 +1,18 @@
 const { Sequelize } = require('sequelize');
 require('dotenv').config();
 
-// Extract the database URL from the environment variable
+// Retrieve the full database URL from environment variables
 const dbUrl = process.env.MYSQL_PUBLIC_URL;
 
+if (!dbUrl || dbUrl.trim() === '') {
+  throw new Error('MYSQL_PUBLIC_URL environment variable is not set or is empty.');
+}
 
+// Initialize Sequelize with the database URL
 const sequelize = new Sequelize(dbUrl, {
-  dialect: 'mysql',  // Define the dialect as 'mysql'
-  dialectModule: require('mysql2'),  // Specify the mysql2 dialect module
-  logging: false,  // Optional: turn off logging if not needed
+  dialect: 'mysql',
+  dialectModule: require('mysql2'),
+  logging: false, // Optional: turn off query logging
 });
-
-// To retain data in tables after backend restart.
-// sequelize.sync({ force: false });
 
 module.exports = sequelize;
