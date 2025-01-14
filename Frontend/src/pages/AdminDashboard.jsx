@@ -141,7 +141,7 @@ const AdminDashboard = () => {
 
   const handleViewComments = async () => {
     try {
-      const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/admin/usercomments`);
+      const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/auth/admin/usercomments`);
       console.log("Full response:", response); // Log the entire response
   
       // Check if the response contains the 'users' array

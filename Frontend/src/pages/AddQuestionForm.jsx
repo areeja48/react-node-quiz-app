@@ -84,7 +84,7 @@ const AddQuestionForm = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/questions`, formData);
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/questions`, formData);
       if (response.status === 200) {
         alert("Question added successfully!");
         setFormData({

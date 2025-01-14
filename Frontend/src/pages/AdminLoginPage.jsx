@@ -80,7 +80,7 @@ const AdminLoginPage = () => {
     setError("");
 
     try {
-      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/admin`, {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/a/admin`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
