@@ -12,7 +12,10 @@ require('dotenv').config();
 const app = express();
 
 // Set up middleware
-app.use(cors({ origin: 'https://interactive-quiz-app-iota.vercel.app' }));
+app.use(cors({ origin: 'https://interactive-quiz-app-iota.vercel.app',
+  methods: ['GET', 'POST'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+ }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));  // For URL-encoded bodies
 
