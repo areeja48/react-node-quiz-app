@@ -12,10 +12,11 @@ require('dotenv').config();
 const app = express();
 
 // Set up middleware
-app.use(cors({ origin: 'https://interactive-quiz-app-iota.vercel.app',
+app.use(cors({ 
+  origin: 'https://interactive-quiz-app-iota.vercel.app',
   methods: ['GET', 'POST'],
   allowedHeaders: ['Content-Type', 'Authorization'],
- }));
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));  // For URL-encoded bodies
 app.use(
@@ -23,7 +24,7 @@ app.use(
     secret: process.env.SECRET_KEY,  // Use a strong secret string
     resave: false,
     saveUninitialized: true,
-  cookie: { secure: true }  // Set to true if using HTTPS // Ensure secure cookies in production
+    cookie: { secure: process.env.NODE_ENV === 'production' }  // Use secure cookies only in production
   })
 );
 
@@ -40,7 +41,7 @@ app.use('/', userRoute);
 module.exports = async (req, res) => {
   try {
     await sequelize.authenticate(); // Ensure database connection before handling requests
-    return app(req, res); // Pass requests to the Express app
+    app(req, res); // Pass requests to the Express app
   } catch (error) {
     console.error('Error connecting to the database:', error);
     res.status(500).send('Database connection error');
