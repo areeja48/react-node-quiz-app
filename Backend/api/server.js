@@ -14,7 +14,7 @@ const app = express();
 // Set up middleware
 app.use(cors({ origin: 'https://interactive-quiz-app-iota.vercel.app' }));
 app.use(express.json());
-
+app.use(express.urlencoded({ extended: true }));  // For URL-encoded bodies
 
 // Serve static files (uploads)
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
