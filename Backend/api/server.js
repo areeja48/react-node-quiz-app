@@ -14,12 +14,7 @@ const app = express();
 // Set up middleware
 app.use(cors({ origin: 'https://interactive-quiz-app-iota.vercel.app' }));
 app.use(express.json());
-app.use(session({
-  secret: process.env.SESSION_SECRET || 'your-secret-key', // Session encryption
-  resave: false,
-  saveUninitialized: true,
-  // Removed cookie settings for compatibility with Vercel
-}));
+
 
 // Serve static files (uploads)
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
