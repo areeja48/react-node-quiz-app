@@ -20,9 +20,9 @@ app.use(express.urlencoded({ extended: true }));  // For URL-encoded bodies
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Set up routes
-app.use('/auth', authRoutes);
-app.use('/api', questionRoutes);
-app.use('/api', resultRoutes);
+app.use('/', authRoutes);
+app.use('/', questionRoutes);
+app.use('/', resultRoutes);
 app.use('/', userRoute);
 
 // Export the serverless function module

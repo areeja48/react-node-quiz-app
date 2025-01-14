@@ -8,55 +8,55 @@
   ],
   "routes": [
     {
-      "src": "/auth/register",
+      "src": "/register",
       "dest": "/api/server.js"
     },
     {
-      "src": "/auth/login",
+      "src": "/login",
       "dest": "/api/server.js"
     },
     {
-      "src": "/auth/admin/dashboard",
+      "src": "/admin/dashboard",
       "dest": "/api/server.js"
     },
     {
-      "src": "/auth/admin",
+      "src": "/admin",
       "dest": "/api/server.js"
     },
     {
-      "src": "/auth/logout",
+      "src": "/logout",
       "dest": "/api/server.js"
     },
     {
-      "src": "/auth/generateOtp",
+      "src": "/generateOtp",
       "dest": "/api/server.js"
     },
     {
-      "src": "/auth/reset",
+      "src": "/reset",
       "dest": "/api/server.js"
     },
     {
-      "src": "/auth/comments",
+      "src": "/comments",
       "dest": "/api/server.js"
     },
     {
-      "src": "/auth/admin/usercomments",
+      "src": "/admin/usercomments",
       "dest": "/api/server.js"
     },
     {
-      "src": "/api/submitscore",
+      "src": "/submitscore",
       "dest": "/api/server.js"
     },
     {
-      "src": "/api/users/results",
+      "src": "/users/results",
       "dest": "/api/server.js"
     },
     {
-      "src": "/api/highestscorer",
+      "src": "/highestscorer",
       "dest": "/api/server.js"
     },
     {
-      "src": "/api/questions",
+      "src": "/questions",
       "dest": "/api/server.js"
     }
   ]
