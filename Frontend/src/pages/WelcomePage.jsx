@@ -342,7 +342,7 @@ const WelcomePage = () => {
     setLoading(true);
     setShowConfetti(true); // Show confetti when fetching the highest scorer
     try {
-      const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/highestscorer`);
+      const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/highestscorer`);
       setHighestScorer(response.data); // Assuming the response contains name, score, and image
       setError('');
       setTimeout(() => {

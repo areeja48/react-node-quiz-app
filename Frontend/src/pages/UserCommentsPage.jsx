@@ -98,7 +98,7 @@ const UserCommentsPage = () => {
       };
       console.log(payload);
   
-      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/auth/comments`, payload);
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/comments`, payload);
   
       // Check the response
       console.log(response.data);

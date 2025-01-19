@@ -110,7 +110,7 @@ const ResultPage = () => {
   const fetchAllResults = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/users/results`);
+      const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/users/results`);
       setAllResults(response.data.results);
       setError("");
     } catch (err) {
@@ -124,7 +124,7 @@ const ResultPage = () => {
   const fetchHighestScorer = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/highestscorer`);
+      const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/highestscorer`);
       setHighestScorer(response.data);
       setError("");
       setIsHighestScorerFetched(true);

@@ -166,7 +166,7 @@ const SignupPage = () => {
     }
 
     try {
-      const { data } = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/auth/register`, formDataToSubmit, {
+      const { data } = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/register`, formDataToSubmit, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

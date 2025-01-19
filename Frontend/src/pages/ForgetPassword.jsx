@@ -18,7 +18,7 @@ const ForgetPasswordPage = () => {
     setMessage("");
 
     try {
-      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/auth/generateOtp`, {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/generateOtp`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -51,7 +51,7 @@ const ForgetPasswordPage = () => {
     }
 
     try {
-      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/auth/reset`, {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/reset`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

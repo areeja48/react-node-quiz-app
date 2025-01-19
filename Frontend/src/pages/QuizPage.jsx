@@ -131,7 +131,7 @@ const QuizPage = () => {
         skippedQuestions,
       };
   
-      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/submitscore`, payload);
+      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/submitscore`, payload);
       navigate("/outcome", {
         state: {
           answers,
