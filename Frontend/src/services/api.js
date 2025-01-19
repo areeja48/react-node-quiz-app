@@ -16,7 +16,7 @@ API.interceptors.request.use((req) => {
 // Existing API calls
 export const login = (credentials) => API.post('/login', credentials);
 export const signup = (data) => API.post('/register', data);
-export const fetchQuestions = () => API.get('/questions');
+export const fetchQuestions = () => API.get('/api/questions');
 export const submitResults = (resultData) => API.post('/results', resultData);
 export const fetchResults = () => API.get('/results');
 
