@@ -5,8 +5,8 @@ const User = require('../models/User');
 const Result = require('../models/Result');
 const cors = require('cors');
 
-// Serve static files from the "uploads" directory
-router.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// Serve static files from the "public" directory
+router.use('/uploads', express.static(path.join(__dirname, 'public')));
 
 // Route to create a result (after quiz completion)
 router.post('/submitscore', async (req, res) => {

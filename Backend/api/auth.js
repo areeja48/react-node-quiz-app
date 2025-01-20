@@ -44,9 +44,9 @@ router.post('/register', upload.single('profileImage'), async (req, res) => {
     // If no file is uploaded, set default avatar based on gender
     if (!req.file) {
       if (req.body.gender === 'Male') {
-        profileImagePath = 'uploads/Male.png'; // path to default male avatar
+        profileImagePath = 'public/Male.png'; // path to default male avatar
       } else if (req.body.gender === 'Female') {
-        profileImagePath = 'uploads/Female.png'; // path to default female avatar
+        profileImagePath = 'public/Female.png'; // path to default female avatar
       } else {
         return res.status(400).json({ error: 'Gender is required to provide default avatar' });
       }
