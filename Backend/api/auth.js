@@ -39,19 +39,19 @@ const SECRET_KEY = process.env.SECRET_KEY;   // To use secret key from .env file
 /// User Registration
 router.post('/register', upload.single('profileImage'), async (req, res) => {
   try {
-    let profileImagePath = '';
+    let profileImagePath = ''; 
 
-    // If no file is uploaded, use the default avatar
+    // If no file is uploaded, set default avatar based on gender
     if (!req.file) {
       if (req.body.gender === 'Male') {
-        profileImagePath = '/uploads/Male.png'; // path to default male avatar
+        profileImagePath = 'uploads/Male.png'; // path to default male avatar
       } else if (req.body.gender === 'Female') {
-        profileImagePath = '/uploads/Female.png'; // path to default female avatar
+        profileImagePath = 'uploads/Female.png'; // path to default female avatar
       } else {
         return res.status(400).json({ error: 'Gender is required to provide default avatar' });
       }
     } else {
-      profileImagePath = '/uploads/' + path.basename(req.file.path); // Use the uploaded profile image
+      profileImagePath = req.file.path; // Use the uploaded profile image
     }
 
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
@@ -70,6 +70,7 @@ router.post('/register', upload.single('profileImage'), async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 });
+
 
 // User Login
 router.post('/login', async (req, res) => {
