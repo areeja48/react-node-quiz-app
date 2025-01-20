@@ -22,7 +22,7 @@ router.post('/questions', async (req, res) => {
   }
 });
 
-router.get('/api/questions', async (req, res) => {
+router.get('/questions', async (req, res) => {
   try {
     const questions = await Question.findAll();  // Fetch all questions from the database
     res.json(questions);  // Send the questions in the response
