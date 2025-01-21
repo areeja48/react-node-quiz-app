@@ -76,37 +76,41 @@ router.get('/users/results', async (req, res) => {
 
 
 
-// Route to fetch the highest scorer's name, score, and picture
+// Route to fetch the highest scorer's name, score, and picture using findAll() and .map()
 router.get('/highestscorer', async (req, res) => {
   try {
-    // Find the highest scorer by score, joining with the User model to include username and profileImage
-    const highestScorer = await Result.findOne({
+    // Fetch all results, joining with the User model to include username and profileImage
+    const allResults = await Result.findAll({
       include: [
         {
           model: User, // Assuming the Result model has a relationship with the User model
           attributes: ['username', 'profileImage'], // Include username and profileImage from the User model
         },
       ],
-      order: [['score', 'DESC']], // Order by score in descending order to get the highest scorer
+      order: [['score', 'DESC']], // Ordering by score, descending, so highest scorer comes first
     });
 
-    if (!highestScorer) {
+    if (!allResults || allResults.length === 0) {
       return res.status(404).json({ error: 'No results found' });
     }
 
-    // Format and return the highest scorer with user information
-    const formattedScorer = {
-      username: highestScorer.User?.username, // Add username
-      profileImage: highestScorer.User?.profileImage, // Add profile image
-      score: highestScorer.score, // Add score
-    };
+    // Map through the allResults to format the response
+    const formattedResults = allResults.map(result => ({
+      userId: result.User?.id, // Add userId from User model
+      username: result.User?.username, // Add username from User model
+      profileImage: result.User?.profileImage, // Add profileImage (Cloudinary URL)
+      score: result.score, // Add score from Result model
+    }));
 
-    res.json(formattedScorer);
+    // Return the formatted results
+    res.json(formattedResults);
+
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'An error occurred while fetching the highest scorer' });
   }
 });
+
 
 
 
