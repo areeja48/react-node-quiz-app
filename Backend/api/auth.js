@@ -24,6 +24,9 @@ const upload = multer({
 
 // User Registration Route
 router.post('/register', upload.single('profileImage'), async (req, res) => {
+  if (req.fileValidationError) {
+    return res.status(400).json({ error: req.fileValidationError });
+  }
   try {
     let profileImageUrl = ''; 
 
