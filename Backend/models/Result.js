@@ -30,7 +30,7 @@ const Result = sequelize.define('result', {
 });
 
 // Define associations
-User.hasMany(Result, { foreignKey: 'userId', onDelete: 'CASCADE' });
+//User.hasMany(Result, { foreignKey: 'userId', onDelete: 'CASCADE' });
 Result.belongsTo(User, { foreignKey: 'userId', onDelete: 'CASCADE' });
 
 module.exports = Result;
