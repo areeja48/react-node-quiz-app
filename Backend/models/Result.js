@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 const User = require('./User');
 
-const Result = sequelize.define('Result', {
+const Result = sequelize.define('result', {
   score: { 
     type: DataTypes.INTEGER, 
     allowNull: false 
@@ -30,8 +30,7 @@ const Result = sequelize.define('Result', {
 });
 
 // Define associations
-Result.associate = function(models) {
-  // Result belongs to one User (many-to-one)
-  Result.belongsTo(models.User, { foreignKey: 'userId' });
-};
+//User.hasMany(Result, { foreignKey: 'userId', onDelete: 'CASCADE' });
+Result.belongsTo(User, { foreignKey: 'userId', onDelete: 'CASCADE' });
+
 module.exports = Result;
