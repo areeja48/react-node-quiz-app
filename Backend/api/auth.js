@@ -8,50 +8,31 @@ const User = require('../models/User');
 const router = express.Router();
 const app = express();  // Add this line to define the express app
 
-// Ensure the 'uploads' directory exists
-const uploadsDir = path.join(__dirname, '../uploads');
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir);
-}
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, uploadsDir), // Use uploads directory
-  filename: (req, file, cb) => cb(null, Date.now() + '-' + file.originalname), // Unique file name
-});
-
-const fileFilter = (req, file, cb) => {
-  const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
-  if (allowedTypes.includes(file.mimetype)) {
-    cb(null, true);
-  } else {
-    cb(new Error('Invalid file type'), false);
-  }
-};
-
-const upload = multer({ 
-  storage,
-  limits: { fileSize: 5 * 1024 * 1024 }, // Limit to 5MB
-  fileFilter,
-});
 
 const SECRET_KEY = process.env.SECRET_KEY;   // To use secret key from .env file 
+const cloudinary = require('../config/cloudinary'); // Import cloudinary configuration
 
-/// User Registration
 router.post('/register', upload.single('profileImage'), async (req, res) => {
   try {
-    let profileImagePath = ''; 
+    let profileImageUrl = ''; 
 
     // If no file is uploaded, set default avatar based on gender
     if (!req.file) {
       if (req.body.gender === 'Male') {
-        profileImagePath = 'public/Male.png'; // path to default male avatar
+        profileImageUrl = 'https://res.cloudinary.com/dgves86wu/image/upload/v1737442237/Male_hrnqaz.png'; // Replace with Cloudinary URL of the default male avatar
       } else if (req.body.gender === 'Female') {
-        profileImagePath = 'public/Female.png'; // path to default female avatar
+        profileImageUrl = 'https://res.cloudinary.com/dgves86wu/image/upload/v1737442362/Female_qfjp6p.png'; // Replace with Cloudinary URL of the default female avatar
       } else {
         return res.status(400).json({ error: 'Gender is required to provide default avatar' });
       }
     } else {
-      profileImagePath = req.file.path; // Use the uploaded profile image
+      // If profile image is uploaded, upload it to Cloudinary
+      const uploadedImage = await cloudinary.uploader.upload(req.file.path, {
+        folder: 'profiles',  // Store in "profiles" folder in Cloudinary
+      });
+
+      profileImageUrl = uploadedImage.secure_url; // Get the secure URL of the uploaded image
     }
 
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
@@ -62,7 +43,7 @@ router.post('/register', upload.single('profileImage'), async (req, res) => {
       contactno: req.body.contactno,
       gender: req.body.gender,
       city: req.body.city,
-      profileImage: profileImagePath, // Store the path to the profile image or default avatar
+      profileImage: profileImageUrl, // Store Cloudinary URL of the profile image or default avatar
     });
 
     res.status(201).json(user);

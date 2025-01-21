@@ -80,8 +80,7 @@ router.get('/users/results', async (req, res) => {
 router.get('/highestscorer', async (req, res) => {
   try {
     const highestScorerResult = await Result.findOne({
-     
- order: [['score', 'DESC']],  // Sorting results by score in descending order
+      order: [['score', 'DESC']],  // Sorting results by score in descending order
       limit: 1,  // Only the highest scorer
       include: {
         model: User,
@@ -97,10 +96,7 @@ router.get('/highestscorer', async (req, res) => {
     const highestScorer = {
       username: highestScorerResult.User.username,  // User's username
       score: highestScorerResult.score,             // Score from the Result model
-      // Fix the profile image URL, replace backslashes and ensure the URL is correct
-      profileImage: highestScorerResult.User.profileImage ? 
-        `${req.protocol}://${req.get('host')}/uploads/${path.basename(highestScorerResult.User.profileImage)}` : 
-        null,  // Ensure proper URL format for the profile image (replace backslashes)
+      profileImage: highestScorerResult.User.profileImage || null,  // Cloudinary URL for the profile image
     };
 
     res.json(highestScorer);  // Send back the highest scorer's information
@@ -109,6 +105,7 @@ router.get('/highestscorer', async (req, res) => {
     res.status(500).json({ error: 'An error occurred while fetching the highest scorer' });
   }
 });
+
 
 
 module.exports = router;
