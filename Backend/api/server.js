@@ -28,8 +28,7 @@ app.use(
   })
 );
 
-// Serve static files (public)
-app.use('/uploads', express.static(path.join(__dirname, 'public')));
+
 
 // Set up routes
 app.use('/', authRoutes);
