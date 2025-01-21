@@ -6,13 +6,40 @@ const fs = require('fs');
 const path = require('path');
 const User = require('../models/User');
 const router = express.Router();
-const app = express();  // Add this line to define the express app
-
-
-
-const SECRET_KEY = process.env.SECRET_KEY;   // To use secret key from .env file 
 const cloudinary = require('../config/cloudinary'); // Import cloudinary configuration
 
+// Set up Multer storage
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    // Define the folder where uploaded files will be stored
+    const uploadDir = path.join(__dirname, '../uploads');
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir);  // Create the folder if it doesn't exist
+    }
+    cb(null, uploadDir);  // Specify the destination
+  },
+  filename: (req, file, cb) => {
+    // Set a unique filename for each file uploaded
+    cb(null, Date.now() + path.extname(file.originalname));  // Generate a unique filename
+  }
+});
+
+// Set up Multer instance
+const upload = multer({
+  storage,
+  limits: { fileSize: 5 * 1024 * 1024 },  // Limit file size to 5MB
+  fileFilter: (req, file, cb) => {
+    // Only allow image files
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+    if (allowedTypes.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Invalid file type'), false);
+    }
+  }
+});
+
+// User Registration Route
 router.post('/register', upload.single('profileImage'), async (req, res) => {
   try {
     let profileImageUrl = ''; 
@@ -51,7 +78,6 @@ router.post('/register', upload.single('profileImage'), async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 });
-
 
 // User Login
 router.post('/login', async (req, res) => {
