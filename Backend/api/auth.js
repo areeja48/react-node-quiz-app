@@ -42,7 +42,7 @@ router.post('/register', upload.single('profileImage'), async (req, res) => {
     } else {
       // If profile image is uploaded, upload it to Cloudinary
       const uploadedImage = await cloudinary.uploader.upload(req.file.path, {
-        folder: 'profiles',  // Store in "profiles" folder in Cloudinary
+        folder: 'Home/profiles',  // Store in "profiles" folder in Cloudinary
       });
 
       profileImageUrl = uploadedImage.secure_url; // Get the secure URL of the uploaded image
