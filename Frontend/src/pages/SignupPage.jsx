@@ -55,12 +55,9 @@ const SelectField = styled.select`
   }
 `;
 
-const FileInput = styled.input`
+const FileButton = styled.input`
   border: none;
   padding: 0;
-`;
-
-const FileButton = styled(FileInput)`
   &::file-selector-button {
     background-color: #6a11cb;
     color: #ffffff;
