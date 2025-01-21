@@ -24,8 +24,12 @@ const upload = multer({
 
 // User Registration Route
 router.post('/register', upload.single('profileImage'), async (req, res) => {
-  if (req.fileValidationError) {
-    return res.status(400).json({ error: req.fileValidationError });
+  console.log("Request received:", req.body); // Debugging log
+  console.log("File in request:", req.file); // Debugging log
+  
+  // If no file is uploaded
+  if (!req.file) {
+    return res.status(400).json({ error: 'File is required' });
   }
   try {
     let profileImageUrl = ''; 
@@ -42,7 +46,7 @@ router.post('/register', upload.single('profileImage'), async (req, res) => {
     } else {
       // If profile image is uploaded, upload it to Cloudinary
       const uploadedImage = await cloudinary.uploader.upload(req.file.path, {
-        folder: 'Home/profiles',  // Store in "profiles" folder in Cloudinary
+        folder: 'profiles',  // Store in "profiles" folder in Cloudinary
       });
 
       profileImageUrl = uploadedImage.secure_url; // Get the secure URL of the uploaded image
