@@ -15,5 +15,5 @@ const User = sequelize.define('user', {
   paymentok: { type: DataTypes.BOOLEAN, allowNull: true, unique: false },
 });
 //User.hasMany(Result, { foreignKey: 'userId', onDelete: 'CASCADE' });
-User.belongsTo(Result, { foreignKey: 'userId', onDelete: 'CASCADE' });
+User.belongsTo(Result, { foreignKey: 'score', onDelete: 'CASCADE' });
 module.exports = User;
