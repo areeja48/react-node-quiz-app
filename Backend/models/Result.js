@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 const User = require('./User');
 
-const Result = sequelize.define('result', {
+const Result = sequelize.define('Result', {
   score: { 
     type: DataTypes.INTEGER, 
     allowNull: false 
