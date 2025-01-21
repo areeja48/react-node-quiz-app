@@ -79,36 +79,35 @@ router.get('/users/results', async (req, res) => {
 // Route to fetch the highest scorer's name, score, and picture
 router.get('/highestscorer', async (req, res) => {
   try {
-    const highestScorerResult = await Result.findOne({
-      order: [['score', 'DESC']],  // Sorting results by score in descending order
-      limit: 1,  // Only the highest scorer
-      include: {
-        model: User,
-        attributes: ['username', 'profileImage'],  // Including username and profileImage from User model
-        required: true,  // Ensuring only results with a corresponding user are returned
-      },
+    // Find the highest scorer by score, joining with the User model to include username and profileImage
+    const highestScorer = await Result.findOne({
+      include: [
+        {
+          model: User, // Assuming the Result model has a relationship with the User model
+          attributes: ['username', 'profileImage'], // Include username and profileImage from the User model
+        },
+      ],
+      order: [['score', 'DESC']], // Order by score in descending order to get the highest scorer
     });
 
-    if (!highestScorerResult) {
+    if (!highestScorer) {
       return res.status(404).json({ error: 'No results found' });
     }
 
-    // Debugging output for the highestScorerResult
-    console.log(highestScorerResult);
-
-    // Construct the response with the highest scorer's details
-    const highestScorer = {
-      username: highestScorerResult.User.username,  // User's username
-      score: highestScorerResult.score,             // Score from the Result model
-      profileImage: highestScorerResult.User.profileImage || null,  // Use Cloudinary URL directly if available
+    // Format and return the highest scorer with user information
+    const formattedScorer = {
+      username: highestScorer.User?.username, // Add username
+      profileImage: highestScorer.User?.profileImage, // Add profile image
+      score: highestScorer.score, // Add score
     };
 
-    res.json(highestScorer);  // Send back the highest scorer's information
+    res.json(formattedScorer);
   } catch (error) {
-    console.error('Error:', error);
+    console.error(error);
     res.status(500).json({ error: 'An error occurred while fetching the highest scorer' });
   }
 });
+
 
 
 module.exports = router;
