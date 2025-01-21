@@ -208,7 +208,7 @@ const ResultPage = () => {
                 <React.Fragment key={result.id}>
                   <tr onClick={() => handleRowClick(result.id)}>
                     <td>{result.id}</td>
-                    <td>{result.username}</td>
+                    <td>{user.username}</td>
                     <td>{result.score}</td>
                     <td>{result.correctAnswers}</td>
                     <td>{result.wrongAnswers}</td>
