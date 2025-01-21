@@ -50,6 +50,7 @@ router.post('/register', upload.single('profileImage'), async (req, res) => {
       });
 
       profileImageUrl = uploadedImage.secure_url; // Get the secure URL of the uploaded image
+      console.log("Uploaded image URL:", uploadedImage.secure_url); // Log the uploaded image URL.
     }
 
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
