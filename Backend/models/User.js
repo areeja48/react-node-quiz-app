@@ -14,6 +14,8 @@ const User = sequelize.define('user', {
   usercomments: { type: DataTypes.TEXT, allowNull: true, unique: false },
   paymentok: { type: DataTypes.BOOLEAN, allowNull: true, unique: false },
 });
-//User.hasMany(Result, { foreignKey: 'userId', onDelete: 'CASCADE' });
-User.belongsTo(Result, { foreignKey: 'userId', onDelete: 'CASCADE' });
+User.associate = function(models) {
+  // User can have many Results (one-to-many)
+  User.hasMany(models.Result, { foreignKey: 'userId' });
+};
 module.exports = User;
