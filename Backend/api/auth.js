@@ -80,6 +80,7 @@ router.post('/register', upload.single('profileImage'), async (req, res) => {
 });
 
 // User Login
+const SECRET_KEY = process.env.SECRET_KEY;
 router.post('/login', async (req, res) => {
   const { username, password } = req.body;
 
