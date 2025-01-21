@@ -76,41 +76,42 @@ router.get('/users/results', async (req, res) => {
 
 
 
-// Route to fetch the highest scorer's name, score, and picture using findAll() and .map()
+// Route to fetch the highest scorer's name, score, and picture without using associations
 router.get('/highestscorer', async (req, res) => {
   try {
-    // Fetch all results, joining with the User model to include username and profileImage
-    const allResults = await Result.findAll({
-      include: [
-        {
-          model: User, // Assuming the Result model has a relationship with the User model
-          attributes: ['username', 'profileImage'], // Include username and profileImage from the User model
-        },
-      ],
-      order: [['score', 'DESC']], // Ordering by score, descending, so highest scorer comes first
+    // Step 1: Find the result with the highest score
+    const highestScorerResult = await Result.findOne({
+      order: [['score', 'DESC']],  // Sorting results by score in descending order
+      limit: 1,  // Only the highest scorer
     });
 
-    if (!allResults || allResults.length === 0) {
+    if (!highestScorerResult) {
       return res.status(404).json({ error: 'No results found' });
     }
 
-    // Map through the allResults to format the response
-    const formattedResults = allResults.map(result => ({
-      userId: result.User?.id, // Add userId from User model
-      username: result.User?.username, // Add username from User model
-      profileImage: result.User?.profileImage, // Add profileImage (Cloudinary URL)
-      score: result.score, // Add score from Result model
-    }));
+    // Step 2: Fetch the corresponding user details by using the userId from the result
+    const user = await User.findByPk(highestScorerResult.userId, {
+      attributes: ['username', 'profileImage'],  // Only select username and profileImage fields
+    });
 
-    // Return the formatted results
-    res.json(formattedResults);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found for the result' });
+    }
 
+    // Step 3: Combine the result and user data
+    const highestScorer = {
+      username: user.username,          // User's username
+      score: highestScorerResult.score, // Score from the Result model
+      profileImage: user.profileImage || null, // Use Cloudinary URL or null if not available
+    };
+
+    // Step 4: Send back the highest scorer's information
+    res.json(highestScorer);
   } catch (error) {
-    console.error(error);
+    console.error('Error:', error);
     res.status(500).json({ error: 'An error occurred while fetching the highest scorer' });
   }
 });
-
 
 
 
