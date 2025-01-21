@@ -8,21 +8,6 @@ const User = require('../models/User');
 const router = express.Router();
 const cloudinary = require('../config/cloudinary'); // Import cloudinary configuration
 
-// Set up Multer storage
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    // Define the folder where uploaded files will be stored
-    const uploadDir = path.join(__dirname, '../uploads');
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir);  // Create the folder if it doesn't exist
-    }
-    cb(null, uploadDir);  // Specify the destination
-  },
-  filename: (req, file, cb) => {
-    // Set a unique filename for each file uploaded
-    cb(null, Date.now() + path.extname(file.originalname));  // Generate a unique filename
-  }
-});
 
 // Set up Multer instance
 const upload = multer({
@@ -99,7 +84,7 @@ router.post('/login', async (req, res) => {
     { 
       id: user.id, 
       username: user.username, 
-      profileImage: `${req.protocol}://${req.get('host')}/uploads/${path.basename(user.profileImage)}`,
+      profileImage: user.profileImage,
       role: user.role || 'user', // Assuming user has a role field
     }, 
     SECRET_KEY, { expiresIn: '1h' }
