@@ -9,38 +9,27 @@ const router = express.Router();
 const cloudinary = require('../config/cloudinary'); // Import cloudinary configuration
 
 
-// User Registration Route
-router.post('/register', (req, res, next) => {
-  // If no file is uploaded, we skip Multer and use the default avatar logic
-  if (!req.body.profileImage) {
-    return next(); // Proceed to the next middleware (i.e., user creation with default avatar)
-  }
+router.post('/register', upload.single('profileImage'), async (req, res) => {
+  console.log("Request received:", req.body); // Make sure gender shows up here
+  console.log("File in request:", req.file);  // Will be undefined if no file uploaded
 
-  // Multer middleware (only triggers if file is present)
-  upload.single('profileImage')(req, res, next);
-}, async (req, res) => {
-  console.log("Request received:", req.body); // Debugging log
-  console.log("File in request:", req.file); // Debugging log
-  
   let profileImageUrl = '';
 
-  // If no file is uploaded, set default avatar based on gender
   if (!req.file) {
-    if (req.body.gender === 'Male') {
-      profileImageUrl = 'https://res.cloudinary.com/dgves86wu/image/upload/v1737442237/Male_hrnqaz.png'; // Default male avatar
-    } else if (req.body.gender === 'Female') {
-      profileImageUrl = 'https://res.cloudinary.com/dgves86wu/image/upload/v1737442362/Female_qfjp6p.png'; // Default female avatar
+    const gender = req.body.gender;
+    if (gender === 'Male') {
+      profileImageUrl = 'https://res.cloudinary.com/dgves86wu/image/upload/v1737442237/Male_hrnqaz.png';
+    } else if (gender === 'Female') {
+      profileImageUrl = 'https://res.cloudinary.com/dgves86wu/image/upload/v1737442362/Female_qfjp6p.png';
     } else {
       return res.status(400).json({ error: 'Gender is required to provide default avatar' });
     }
   } else {
-    // If profile image is uploaded, upload it to Cloudinary
     try {
       const uploadedImage = await cloudinary.uploader.upload(req.file.path, {
-        folder: 'profiles',  // Store in "profiles" folder in Cloudinary
+        folder: 'profiles',
       });
-
-      profileImageUrl = uploadedImage.secure_url; // Get the secure URL of the uploaded image
+      profileImageUrl = uploadedImage.secure_url;
     } catch (error) {
       return res.status(400).json({ error: 'Error uploading image: ' + error.message });
     }
@@ -55,7 +44,7 @@ router.post('/register', (req, res, next) => {
       contactno: req.body.contactno,
       gender: req.body.gender,
       city: req.body.city,
-      profileImage: profileImageUrl, // Store Cloudinary URL of the profile image or default avatar
+      profileImage: profileImageUrl,
     });
 
     res.status(201).json(user);
