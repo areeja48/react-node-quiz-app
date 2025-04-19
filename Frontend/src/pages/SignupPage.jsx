@@ -115,9 +115,8 @@ const SignupPage = () => {
     profileImage: null,
   });
   const [successMessage, setSuccessMessage] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-  const [avatar, setAvatar] = useState('');
-  const [passwordsMatch, setPasswordsMatch] = useState(true);
+  const [avatar, setAvatar] = useState(''); // For showing profile image
+  const [passwordsMatch, setPasswordsMatch] = useState(true); // Password match state
   const navigate = useNavigate();
 
   const handleInputChange = (e) => {
@@ -143,11 +142,13 @@ const SignupPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Validate passwords match before submitting
     if (!passwordsMatch) {
       alert('Passwords do not match!');
       return;
     }
 
+    // Prepare form data
     const formDataToSubmit = new FormData();
     formDataToSubmit.append('username', formData.username);
     formDataToSubmit.append('email', formData.email);
@@ -156,6 +157,7 @@ const SignupPage = () => {
     formDataToSubmit.append('gender', formData.gender);
     formDataToSubmit.append('city', formData.city);
 
+    // Append the profile image only if it exists
     if (formData.profileImage) {
       formDataToSubmit.append('profileImage', formData.profileImage);
     }
@@ -167,12 +169,14 @@ const SignupPage = () => {
         },
       });
 
+      // Set avatar based on returned data (either uploaded image or default)
       setAvatar(data.profileImage || `${process.env.REACT_APP_BACKEND_URL}/uploads/${formData.gender}.png`);
+
       setSuccessMessage('Signup successful! Redirecting to login...');
       setTimeout(() => navigate('/auth/login'), 2000);
     } catch (err) {
-      const message = err.response?.data?.message || 'Signup failed, please try again.';
-      setErrorMessage(message);
+      // Handle errors (e.g., email already exists, validation errors)
+      console.error(err.response?.data?.message || 'Signup failed');
     }
   };
 
@@ -211,6 +215,7 @@ const SignupPage = () => {
         onChange={handleInputChange}
         required
       />
+      {/* Password mismatch error message */}
       {!passwordsMatch && <ErrorMessage>Passwords do not match!</ErrorMessage>}
 
       <InputField
@@ -241,9 +246,7 @@ const SignupPage = () => {
         accept="image/*"
       />
       <SubmitButton type="submit" disabled={!passwordsMatch}>Signup</SubmitButton>
-
       {successMessage && <SuccessMessage>{successMessage}</SuccessMessage>}
-      {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
       {avatar && <img src={avatar} alt="Profile Avatar" style={{ width: 100, height: 100, borderRadius: '50%' }} />}
     </FormContainer>
   );
