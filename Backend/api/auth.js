@@ -24,7 +24,7 @@ const upload = multer({
 
 // User Registration Route
 router.post('/register', upload.single('profileImage'), async (req, res) => {
-  console.log("Request received:", req.body); // Debugging log
+ console.log("Request received:", req.body); // Debugging log
   console.log("File in request:", req.file); // Debugging log
   
   // If no file is uploaded
@@ -50,7 +50,6 @@ router.post('/register', upload.single('profileImage'), async (req, res) => {
       });
 
       profileImageUrl = uploadedImage.secure_url; // Get the secure URL of the uploaded image
-      console.log("Uploaded image URL:", uploadedImage.secure_url); // Log the uploaded image URL.
     }
 
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
