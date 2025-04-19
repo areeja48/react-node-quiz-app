@@ -9,27 +9,40 @@ const cloudinary = require('../config/cloudinary'); // Import cloudinary configu
 
 
 // User Registration Route
-router.post('/register', upload.fields([{ name: 'profileImage', maxCount: 1 }]), async (req, res) => {
-  console.log("Body:", req.body); // This should now include gender
-  console.log("Files:", req.files); // Optional file upload
+router.post('/register', (req, res, next) => {
+  // If no file is uploaded, we skip Multer and use the default avatar logic
+  if (!req.body.profileImage) {
+    return next(); // Proceed to the next middleware (i.e., user creation with default avatar)
+  }
 
+  // Multer middleware (only triggers if file is present)
+  upload.single('profileImage')(req, res, next);
+}, async (req, res) => {
+  console.log("Request received:", req.body); // Debugging log
+  console.log("File in request:", req.file); // Debugging log
+  
   let profileImageUrl = '';
 
-  if (!req.files || !req.files.profileImage) {
-    const gender = req.body.gender;
-
-    if (gender === 'Male') {
-      profileImageUrl = 'https://res.cloudinary.com/dgves86wu/image/upload/v1737442237/Male_hrnqaz.png';
-    } else if (gender === 'Female') {
-      profileImageUrl = 'https://res.cloudinary.com/dgves86wu/image/upload/v1737442362/Female_qfjp6p.png';
+  // If no file is uploaded, set default avatar based on gender
+  if (!req.file) {
+    if (req.body.gender === 'Male') {
+      profileImageUrl = 'https://res.cloudinary.com/dgves86wu/image/upload/v1737442237/Male_hrnqaz.png'; // Default male avatar
+    } else if (req.body.gender === 'Female') {
+      profileImageUrl = 'https://res.cloudinary.com/dgves86wu/image/upload/v1737442362/Female_qfjp6p.png'; // Default female avatar
     } else {
       return res.status(400).json({ error: 'Gender is required to provide default avatar' });
     }
   } else {
-    const uploadedImage = await cloudinary.uploader.upload(req.files.profileImage[0].path, {
-      folder: 'profiles',
-    });
-    profileImageUrl = uploadedImage.secure_url;
+    // If profile image is uploaded, upload it to Cloudinary
+    try {
+      const uploadedImage = await cloudinary.uploader.upload(req.file.path, {
+        folder: 'profiles',  // Store in "profiles" folder in Cloudinary
+      });
+
+      profileImageUrl = uploadedImage.secure_url; // Get the secure URL of the uploaded image
+    } catch (error) {
+      return res.status(400).json({ error: 'Error uploading image: ' + error.message });
+    }
   }
 
   try {
