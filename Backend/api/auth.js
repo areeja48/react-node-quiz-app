@@ -1,7 +1,6 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
 const User = require('../models/User');
@@ -9,49 +8,44 @@ const router = express.Router();
 const cloudinary = require('../config/cloudinary'); // Import cloudinary configuration
 
 
-// Set up Multer instance
-const upload = multer({
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
-  fileFilter: (req, file, cb) => {
-    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
-    if (allowedTypes.includes(file.mimetype)) {
-      cb(null, true);
-    } else {
-      cb(new Error('Invalid file type'), false);
-    }
-  }
-});
-
 // User Registration Route
-router.post('/register', upload.single('profileImage'), async (req, res) => {
- console.log("Request received:", req.body); // Debugging log
+router.post('/register', (req, res, next) => {
+  // If no file is uploaded, we skip Multer and use the default avatar logic
+  if (!req.body.profileImage) {
+    return next(); // Proceed to the next middleware (i.e., user creation with default avatar)
+  }
+
+  // Multer middleware (only triggers if file is present)
+  upload.single('profileImage')(req, res, next);
+}, async (req, res) => {
+  console.log("Request received:", req.body); // Debugging log
   console.log("File in request:", req.file); // Debugging log
   
-  // If no file is uploaded
-  if (!req.file) {
-    return res.status(400).json({ error: 'File is required' });
-  }
-  try {
-    let profileImageUrl = ''; 
+  let profileImageUrl = '';
 
-    // If no file is uploaded, set default avatar based on gender
-    if (!req.file) {
-      if (req.body.gender === 'Male') {
-        profileImageUrl = 'https://res.cloudinary.com/dgves86wu/image/upload/v1737442237/Male_hrnqaz.png'; // Replace with Cloudinary URL of the default male avatar
-      } else if (req.body.gender === 'Female') {
-        profileImageUrl = 'https://res.cloudinary.com/dgves86wu/image/upload/v1737442362/Female_qfjp6p.png'; // Replace with Cloudinary URL of the default female avatar
-      } else {
-        return res.status(400).json({ error: 'Gender is required to provide default avatar' });
-      }
+  // If no file is uploaded, set default avatar based on gender
+  if (!req.file) {
+    if (req.body.gender === 'Male') {
+      profileImageUrl = 'https://res.cloudinary.com/dgves86wu/image/upload/v1737442237/Male_hrnqaz.png'; // Default male avatar
+    } else if (req.body.gender === 'Female') {
+      profileImageUrl = 'https://res.cloudinary.com/dgves86wu/image/upload/v1737442362/Female_qfjp6p.png'; // Default female avatar
     } else {
-      // If profile image is uploaded, upload it to Cloudinary
+      return res.status(400).json({ error: 'Gender is required to provide default avatar' });
+    }
+  } else {
+    // If profile image is uploaded, upload it to Cloudinary
+    try {
       const uploadedImage = await cloudinary.uploader.upload(req.file.path, {
         folder: 'profiles',  // Store in "profiles" folder in Cloudinary
       });
 
       profileImageUrl = uploadedImage.secure_url; // Get the secure URL of the uploaded image
+    } catch (error) {
+      return res.status(400).json({ error: 'Error uploading image: ' + error.message });
     }
+  }
 
+  try {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
     const user = await User.create({
       username: req.body.username,
@@ -68,7 +62,6 @@ router.post('/register', upload.single('profileImage'), async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 });
-
 // User Login
 const SECRET_KEY = process.env.SECRET_KEY;
 router.post('/login', async (req, res) => {
