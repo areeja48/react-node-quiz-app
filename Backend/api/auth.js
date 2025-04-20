@@ -1,7 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-
+const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
 const User = require('../models/User');
@@ -9,14 +9,33 @@ const router = express.Router();
 const cloudinary = require('../config/cloudinary'); // Import cloudinary configuration
 
 
+// ✅ Multer Setup
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/'); // Make sure this folder exists
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, uniqueSuffix + path.extname(file.originalname));
+  }
+});
+const upload = multer({ storage: storage });
+
+// ✅ POST /register Route
 router.post('/register', upload.single('profileImage'), async (req, res) => {
-  console.log("Request received:", req.body); // Make sure gender shows up here
-  console.log("File in request:", req.file);  // Will be undefined if no file uploaded
+  console.log("📥 Request body:", req.body);
+  console.log("📁 File uploaded:", req.file);
+
+  const { username, email, password, contactno, gender, city } = req.body;
+
+  if (!username || !email || !password || !contactno || !gender || !city) {
+    return res.status(400).json({ error: 'All fields are required' });
+  }
 
   let profileImageUrl = '';
 
+  // 🧍‍♂️ If no file uploaded, use gender-based default
   if (!req.file) {
-    const gender = req.body.gender;
     if (gender === 'Male') {
       profileImageUrl = 'https://res.cloudinary.com/dgves86wu/image/upload/v1737442237/Male_hrnqaz.png';
     } else if (gender === 'Female') {
@@ -30,28 +49,36 @@ router.post('/register', upload.single('profileImage'), async (req, res) => {
         folder: 'profiles',
       });
       profileImageUrl = uploadedImage.secure_url;
+
+      // ✅ Delete local file after upload to Cloudinary
+      fs.unlinkSync(req.file.path);
     } catch (error) {
-      return res.status(400).json({ error: 'Error uploading image: ' + error.message });
+      console.error("❌ Cloudinary Upload Error:", error);
+      return res.status(500).json({ error: 'Image upload failed. Try again later.' });
     }
   }
 
   try {
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
-    const user = await User.create({
-      username: req.body.username,
-      email: req.body.email,
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newUser = await User.create({
+      username,
+      email,
       password: hashedPassword,
-      contactno: req.body.contactno,
-      gender: req.body.gender,
-      city: req.body.city,
+      contactno,
+      gender,
+      city,
       profileImage: profileImageUrl,
     });
 
-    res.status(201).json(user);
+    console.log("✅ User created:", newUser);
+    return res.status(201).json(newUser);
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    console.error("❌ User creation error:", error);
+    return res.status(500).json({ error: 'Error creating user: ' + error.message });
   }
 });
+
 // User Login
 const SECRET_KEY = process.env.SECRET_KEY;
 router.post('/login', async (req, res) => {
