@@ -8,59 +8,29 @@ const User = require('../models/User');
 const router = express.Router();
 const cloudinary = require('../config/cloudinary'); // Import cloudinary configuration
 
+router.post('/register', async (req, res) => {
+  try {
+    const { username, email, password, contactno, gender, city } = req.body;
 
-// ✅ Multer Setup
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'uploads/'); // Make sure this folder exists
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, uniqueSuffix + path.extname(file.originalname));
-  }
-});
-const upload = multer({ storage: storage });
+    // ✅ Validate required fields
+    if (!username || !email || !password || !contactno || !gender || !city) {
+      return res.status(400).json({ error: 'All fields are required' });
+    }
 
-// ✅ POST /register Route
-router.post('/register', upload.single('profileImage'), async (req, res) => {
-  console.log("📥 Request body:", req.body);
-  console.log("📁 File uploaded:", req.file);
-
-  const { username, email, password, contactno, gender, city } = req.body;
-
-  if (!username || !email || !password || !contactno || !gender || !city) {
-    return res.status(400).json({ error: 'All fields are required' });
-  }
-
-  let profileImageUrl = '';
-
-  // 🧍‍♂️ If no file uploaded, use gender-based default
-  if (!req.file) {
+    // ✅ Choose profile image based on gender
+    let profileImageUrl = '';
     if (gender === 'Male') {
       profileImageUrl = 'https://res.cloudinary.com/dgves86wu/image/upload/v1737442237/Male_hrnqaz.png';
     } else if (gender === 'Female') {
       profileImageUrl = 'https://res.cloudinary.com/dgves86wu/image/upload/v1737442362/Female_qfjp6p.png';
     } else {
-      return res.status(400).json({ error: 'Gender is required to provide default avatar' });
+      return res.status(400).json({ error: 'Invalid gender' });
     }
-  } else {
-    try {
-      const uploadedImage = await cloudinary.uploader.upload(req.file.path, {
-        folder: 'profiles',
-      });
-      profileImageUrl = uploadedImage.secure_url;
 
-      // ✅ Delete local file after upload to Cloudinary
-      fs.unlinkSync(req.file.path);
-    } catch (error) {
-      console.error("❌ Cloudinary Upload Error:", error);
-      return res.status(500).json({ error: 'Image upload failed. Try again later.' });
-    }
-  }
-
-  try {
+    // ✅ Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // ✅ Create user
     const newUser = await User.create({
       username,
       email,
@@ -72,13 +42,13 @@ router.post('/register', upload.single('profileImage'), async (req, res) => {
     });
 
     console.log("✅ User created:", newUser);
-    return res.status(201).json(newUser);
+    res.status(201).json(newUser);
+
   } catch (error) {
-    console.error("❌ User creation error:", error);
-    return res.status(500).json({ error: 'Error creating user: ' + error.message });
+    console.error("❌ Registration error:", error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
-
 // User Login
 const SECRET_KEY = process.env.SECRET_KEY;
 router.post('/login', async (req, res) => {
